@@ -3,7 +3,7 @@ from dash import html  # type: ignore[import-untyped]
 import json
 
 # Load GeoJSON Data (Only Once)
-with open("geoapp/data/forward.geojson", "r") as f:
+with open("src/data/forward.geojson", "r") as f:
     forward = json.load(f)
 
 
@@ -30,7 +30,9 @@ def create_map():
                 preferCanvas=True,
                 children=[
                     dl.TileLayer(
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        url=(
+                            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"  # noqa: E501
+                        )
                     ),
                     dl.FeatureGroup(children=[], id="points"),
                     dl.FeatureGroup(children=[], id="emission"),

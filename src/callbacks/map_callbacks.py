@@ -1,6 +1,12 @@
 import math
-from dash import callback, Output, Input, State, no_update  # type: ignore[import-untyped]
-import dash_leaflet as dl  # type: ignore[import-untyped]
+from dash import (
+    callback,
+    Output,
+    Input,
+    State,
+    no_update,
+)
+import dash_leaflet as dl
 import json
 from src.data.process_data import group_data_by_sampletime
 from src.data.process_lines import fix_line_coordinates
@@ -9,13 +15,18 @@ from src.utils.line_utils import (
     calculate_direction_diff,
     get_color_from_angle,
 )
+from src.utils.map_utils import (
+    create_heading_line,
+    create_point_marker,
+    process_lines_with_fix,
+)
 
 # Load GeoJSON files once
-with open("geoapp/data/forward.geojson", "r") as f:
+with open("src/data/forward.geojson", "r") as f:
     forward = json.load(f)
     processed_forward = group_data_by_sampletime(forward)
 
-with open("geoapp/data/backward.geojson", "r") as f:
+with open("src/data/backward.geojson", "r") as f:
     backward = json.load(f)
     processed_backward = group_data_by_sampletime(backward)
 
@@ -54,59 +65,25 @@ def animate_lines(
         map_center = point
         line_coordinates = sample_data["lines"]
 
-        points.append(
-            dl.Circle(
-                center=point,
-                radius=5,
-                # icon={
-                #     "iconUrl": (
-                #         "https://maps.google.com/mapfiles/ms/icons/red-dot.png"
-                #     ),
-                #     "iconSize": [25, 25],
-                # },
-                pathOptions={"color": "red"},
-                children=n_intervals,
+        points.append(create_point_marker(point, "red", n_intervals))
+        lines.extend(
+            process_lines_with_fix(
+                line_coordinates,
+                "blue",
+                n_intervals,
             )
         )
-        for line in line_coordinates:
-            if fix_line_coordinates(line):
-                lines.append(
-                    dl.Polyline(
-                        positions=fix_line_coordinates(line),
-                        pathOptions={"color": "blue"},
-                        children=n_intervals,
-                    )
-                )
 
-        if heading is not None:
-            heading_length = 0.0006  # Adjust for visualization
-            heading_rad = math.radians(heading)
-            end_point = [
-                point[0] + heading_length * math.cos(heading_rad),
-                point[1] + heading_length * math.sin(heading_rad),
-            ]
+        heading_line = create_heading_line(point, heading, "red", n_intervals)
+        if heading_line:
+            lines.append(heading_line)
 
-            lines.append(
-                dl.Polyline(
-                    positions=[point, end_point],
-                    pathOptions={"color": "red"},
-                    children=n_intervals,
-                )
-            )
     elif n_intervals - len(sampletimes) >= 0:
         backward_idx = len(sampletimes) - (n_intervals - len(sampletimes)) - 1
         backward = sorted(processed_backward.keys())
         backtime = backward[backward_idx]
         sample_data = processed_backward[backtime]
 
-        # lines = [
-        #     d
-        #     for d in lines
-        #     if not (
-        #         d["props"].get("children") >= backward_idx
-        #         and d["props"]["pathOptions"].get("color") == "blue"
-        #     )
-        # ]
         for d in lines:
             if (
                 d["props"].get("children") == backward_idx
@@ -130,15 +107,13 @@ def animate_lines(
         map_center = point
         line_coordinates = sample_data["lines"]
 
-        for line in line_coordinates:
-            if fix_line_coordinates(line):
-                lines.append(
-                    dl.Polyline(
-                        positions=fix_line_coordinates(line),
-                        pathOptions={"color": "green"},
-                        children=n_intervals,
-                    )
-                )
+        lines.extend(
+            process_lines_with_fix(
+                line_coordinates,
+                "green",
+                n_intervals,
+            )
+        )
 
     return (
         points,
@@ -182,7 +157,15 @@ def backtrack(
             None,
         )
     elif step > 0 and all_clicks - len(sampletimes) >= 0:
-        idx = 2 * len(sampletimes) - step - 2
+        idx = 2 * len(sampletimes) - step - 1
+
+        for d in lines:
+            if (
+                d["props"].get("children") == idx
+                and d["props"].get("id") == "heading"  # noqa: E501
+            ):
+                d["props"]["pathOptions"].update({"color": "red"})
+
         lines = [
             d
             for d in lines
@@ -208,7 +191,11 @@ def backtrack(
                 )
 
         map_center = next(
-            (d["props"]["center"] for d in points if d["props"].get("children") == idx),
+            (
+                d["props"]["center"]
+                for d in points
+                if d["props"].get("children") == idx + 1
+            ),
             None,
         )
 
@@ -312,39 +299,12 @@ def finish_algorithm(_, points, lines, map_center, all_clicks):
         map_center = point
         line_coordinates = sample_data["lines"]
 
-        points.append(
-            dl.Circle(
-                center=point,
-                radius=5,
-                pathOptions={"color": "red"},
-                children=idx,
-            )
-        )
-        for line in line_coordinates:
-            if fix_line_coordinates(line):
-                lines.append(
-                    dl.Polyline(
-                        positions=fix_line_coordinates(line),
-                        pathOptions={"color": "blue"},
-                        children=idx,
-                    )
-                )
+        points.append(create_point_marker(point, "red", idx))
+        lines.extend(process_lines_with_fix(line_coordinates, "blue", idx))
 
-        if heading is not None:
-            heading_length = 0.0006  # Adjust for visualization
-            heading_rad = math.radians(heading)
-            end_point = [
-                point[0] + heading_length * math.cos(heading_rad),
-                point[1] + heading_length * math.sin(heading_rad),
-            ]
-
-            lines.append(
-                dl.Polyline(
-                    positions=[point, end_point],
-                    pathOptions={"color": "red"},
-                    children=idx,
-                )
-            )
+        heading_line = create_heading_line(point, heading, "red", idx)
+        if heading_line:
+            lines.append(heading_line)
 
     return (
         points,

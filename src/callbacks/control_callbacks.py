@@ -1,4 +1,8 @@
-from dash import callback, Output, Input  # type: ignore[import-untyped]
+from dash import (
+    callback,
+    Output,
+    Input,
+)
 
 
 @callback(
@@ -18,3 +22,18 @@ def interval_state(radio_value: str):
 )
 def toggle_play_pause(n_clicks):
     return "Pause" if n_clicks % 2 else "Play"
+
+
+@callback(
+    Output("modal", "is_open"),
+    Output("probabilities", "value"),
+    Input("probabilities", "value"),
+    Input("modal", "is_open"),
+    prevent_initial_call=True,
+)
+def toggle_modal(selected_value, is_open):
+
+    if selected_value == "transition":
+        return True, "off"
+    else:
+        return is_open, selected_value

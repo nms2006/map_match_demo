@@ -1,7 +1,9 @@
-from dash import html  # type: ignore
-import dash_bootstrap_components as dbc
+from dash import html
+
+# pylint: disable=import-error
 import src.components.map as map_component
-import src.components.controls as controls_component  # type: ignore
+import src.components.controls as controls_component
+import src.components.popup as popup_component
 
 
 def create_layout():
@@ -22,14 +24,8 @@ def create_layout():
             "fontFamily": "Arial, sans-serif",
         },
         children=[
-            dbc.Spinner(
-                children=html.Div(id="loading-output"),
-                fullscreen=True,
-                fullscreen_style={
-                    "backgroundColor": "rgba(255, 255, 255, 0.1)",
-                },
-                # show_initially=False,
-            ),
+            popup_component.create_popup(),
+            popup_component.full_screen_spinner(),
             html.Div(
                 style={
                     "display": "flex",
