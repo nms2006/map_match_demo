@@ -1,5 +1,4 @@
 from dash import dcc, html  # type: ignore[import-untyped]
-import dash_bootstrap_components as dbc
 from src.utils.button_utils import button_style
 
 

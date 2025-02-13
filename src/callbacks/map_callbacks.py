@@ -110,7 +110,7 @@ def animate_lines(
         lines.extend(
             process_lines_with_fix(
                 line_coordinates,
-                "blue",
+                "green",
                 n_intervals,
             )
         )

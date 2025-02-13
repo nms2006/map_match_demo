@@ -26,12 +26,14 @@ def toggle_play_pause(n_clicks):
 
 @callback(
     Output("modal", "is_open"),
+    Output("probabilities", "value"),
     Input("probabilities", "value"),
+    Input("modal", "is_open"),
     prevent_initial_call=True,
 )
-def toggle_modal(selected_value):
+def toggle_modal(selected_value, is_open):
 
     if selected_value == "transition":
-        return True
+        return True, "off"
     else:
-        return False
+        return is_open, selected_value
