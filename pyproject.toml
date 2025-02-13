@@ -2,8 +2,14 @@
 name = "map-match-demo"
 version = "0.1.0"
 description = ""
-authors = ["Nicklas Svendsen <nmsv@inspari.dk>"]
+authors = ["Nicklas Svendsen <nicklas.apple@icloud.com>"]
 readme = "README.md"
+
+[tool.poetry.group.dev.dependencies]
+pylint = "^3.3.4"
+
+[tool.mypy]
+disable_error_code = ["import-untyped"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -11,6 +17,7 @@ dash = "^2.18.2"
 dash-leaflet = "^1.0.15"
 matplotlib = "^3.10.0"
 dash-bootstrap-components = "^1.7.1"
+dash-mantine-components = "^0.15.3"
 
 
 [build-system]

@@ -1,4 +1,5 @@
 from dash import dcc, html  # type: ignore[import-untyped]
+import dash_bootstrap_components as dbc
 from src.utils.button_utils import button_style
 
 
@@ -15,27 +16,6 @@ def create_controls():
             "marginBottom": "auto",
         },
         children=[
-            # html.Div(
-            #     id="gradient",
-            #     style={
-            #         "width": "100%",
-            #         "aspectRatio": "1",
-            #         "borderRadius": "50%",
-            #         "background": (
-            #             "conic-gradient(from 0deg, "
-            #             "rgba(0,103,27,1), "
-            #             "rgba(1,132,73,1), "
-            #             "rgba(2,120,134,1), "
-            #             "rgba(3,105,197,1), "
-            #             "rgba(0,82,255,1), "
-            #             "rgba(3,105,197,1), "
-            #             "rgba(2,120,134,1), "
-            #             "rgba(1,132,73,1), "
-            #             "rgba(0,103,27,1)"
-            #         ),
-            #         "marginBottom": "20px",
-            #     },
-            # ),
             html.Div(
                 id="gradient",
                 style={

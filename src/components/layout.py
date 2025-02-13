@@ -1,4 +1,6 @@
-from dash import html  # type: ignore
+from dash import html
+
+# pylint: disable=import-error
 import dash_bootstrap_components as dbc
 import src.components.map as map_component
 import src.components.controls as controls_component  # type: ignore
@@ -22,6 +24,37 @@ def create_layout():
             "fontFamily": "Arial, sans-serif",
         },
         children=[
+            dbc.Modal(
+                [
+                    dbc.ModalHeader(
+                        dbc.ModalTitle(
+                            "Hello World!",
+                            style={"fontSize": "xx-large"},
+                        ),
+                        id="modal-header",
+                        close_button=True,
+                    ),
+                    dbc.ModalBody(
+                        html.Div(
+                            [
+                                html.Img(
+                                    src="assets/diagram.svg",
+                                    style={
+                                        "width": "100%",
+                                    },
+                                ),
+                            ],
+                        ),
+                        style={
+                            "alignSelf": "center",
+                            "width": "90%",
+                        },
+                    ),
+                ],
+                id="modal",
+                is_open=False,
+                size="xl",
+            ),
             dbc.Spinner(
                 children=html.Div(id="loading-output"),
                 fullscreen=True,
