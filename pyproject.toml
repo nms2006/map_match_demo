@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "map-match-demo"
+version = "0.1.0"
+description = ""
+authors = ["Nicklas Svendsen <nmsv@inspari.dk>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+dash = "^2.18.2"
+dash-leaflet = "^1.0.15"
+matplotlib = "^3.10.0"
+dash-bootstrap-components = "^1.7.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
