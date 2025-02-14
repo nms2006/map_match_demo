@@ -2,7 +2,7 @@
 # pylint: disable=unused-import
 
 from dash import Dash
-import dash_bootstrap_components as dbc
+import dash_bootstrap_components as dbc  # pylint: disable=import-error
 from src.components import layout
 
 
