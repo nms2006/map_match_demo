@@ -19,6 +19,7 @@ app = Dash(
         dbc.icons.BOOTSTRAP,
     ],
 )
+server = app.server
 app.layout = layout.create_layout()  # Set the layout
 
 if __name__ == "__main__":
