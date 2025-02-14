@@ -111,7 +111,7 @@ def animate_lines(
             process_lines_with_fix(
                 line_coordinates,
                 "green",
-                n_intervals,
+                backward_idx,
             )
         )
 
@@ -145,7 +145,7 @@ def backtrack(
     step = all_clicks - 1
     sampletimes = sorted(processed_forward.keys())
 
-    if step > 0 and all_clicks < len(sampletimes):
+    if step > 0 and all_clicks <= len(sampletimes):
         points = [d for d in points if d["props"].get("children") < step]
         lines = [d for d in lines if d["props"].get("children") < step]
         map_center = next(
@@ -156,7 +156,7 @@ def backtrack(
             ),
             None,
         )
-    elif step > 0 and all_clicks - len(sampletimes) >= 0:
+    elif step > 0 and all_clicks - len(sampletimes) > 0:
         idx = 2 * len(sampletimes) - step - 1
 
         for d in lines:
@@ -194,9 +194,10 @@ def backtrack(
             (
                 d["props"]["center"]
                 for d in points
-                if d["props"].get("children") == idx + 1
+                if d["props"].get("children")
+                == (idx if idx == len(sampletimes) else idx + 1)
             ),
-            None,
+            map_center,
         )
 
     else:
