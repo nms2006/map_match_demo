@@ -1,40 +1,40 @@
-import dash_bootstrap_components as dbc
+import dash_bootstrap_components as dbc  # pylint: disable=import-error
 from dash import html
 
 
 def create_popup():
-    return (
-        dbc.Modal(
-            [
-                dbc.ModalHeader(
-                    dbc.ModalTitle(
-                        "Diagram til overgang mellem veje.",
-                        style={"fontSize": "xx-large"},
-                    ),
-                    id="modal-header",
-                    close_button=True,
-                ),
-                dbc.ModalBody(
-                    html.Div(
-                        [
-                            html.Img(
-                                src="assets/diagram.svg",
-                                style={
-                                    "width": "100%",
-                                },
-                            ),
-                        ],
-                    ),
+    return dbc.Modal(
+        [
+            dbc.ModalHeader(
+                dbc.ModalTitle(
+                    "Diagram til overgang mellem veje.",
                     style={
-                        "alignSelf": "center",
-                        "width": "90%",
+                        "fontSize": "xx-large",
                     },
                 ),
-            ],
-            id="modal",
-            is_open=False,
-            size="xl",
-        ),
+                id="modal-header",
+                close_button=True,
+            ),
+            dbc.ModalBody(
+                html.Div(
+                    [
+                        html.Img(
+                            src="assets/diagram.svg",
+                            style={
+                                "width": "100%",
+                            },
+                        ),
+                    ],
+                ),
+                style={
+                    "alignSelf": "center",
+                    "width": "90%",
+                },
+            ),
+        ],
+        id="modal",
+        is_open=False,
+        size="xl",
     )
 
 
