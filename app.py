@@ -23,4 +23,4 @@ server = app.server
 app.layout = layout.create_layout()  # Set the layout
 
 if __name__ == "__main__":
-    app.run_server(debug=True, port=8050)
+    app.run_server(debug=False)
